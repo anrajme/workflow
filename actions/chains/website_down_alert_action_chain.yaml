@@ -1,14 +1,14 @@
 ---
     chain:
       - name: "verify_env"
-        ref: "acwebhook.verify_env"
+        ref: "workflow.verify_env"
         parameters:
           accountname: "{{accountname}}"
         on-success: "zd_create"
         on-failure: "cloud_fail"
 
       - name: "zd_create"
-        ref: "zendesklite.create.ticket"
+        ref: "workflow.create.ticket"
         parameters:
           subject: "Message from Newrelic to Stack Storm"
           description: "Cloud Project Id: {{verify_env.stdout}}, Issue: {{ticketdetails}}"
@@ -17,7 +17,7 @@
         on-failure: "zd_fail"
 
       - name: "check_deployment"
-        ref: "acwebhook.check_deployment"
+        ref: "workflow.check_deployment"
         parameters:
           envname: "{{verify_env.stdout}}"
         on-success: "zd_update"
@@ -33,7 +33,7 @@
         on-failure: "zd_fail"
 
       - name: "slack_decide"
-        ref: "acwebhook.need_slack_channel"
+        ref: "workflow.need_slack_channel"
         parameters:
           flagstatus: '{{check_deployment.stdout}}'
         on-success: "slack_channel_create"

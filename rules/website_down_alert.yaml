@@ -13,7 +13,7 @@
           type: "equals"
 
   action:
-    ref: "acwebhook.website_down_alert_action_chain"
+    ref: "workflow.website_down_alert_action_chain"
     parameters:
         ticketdetails: "{{ trigger.body.details }}"
         accountname: "{{ trigger.body.account_name }}"

@@ -1,6 +1,6 @@
 ---
 name: "cloud_check_disk"
-action_ref: "acwebhook.cloud_check_disk"
+action_ref: "workflow.cloud_check_disk"
 description: "Execute a command on a remote host via SSH."
 formats:
     - "checkdisk {{envname}}"
