@@ -8,7 +8,7 @@
         on-failure: "cloud_fail"
 
       - name: "zd_create"
-        ref: "workflow.create.ticket"
+        ref: "zendesklite.create.ticket"
         parameters:
           subject: "Message from Newrelic to Stack Storm"
           description: "Cloud Project Id: {{verify_env.stdout}}, Issue: {{ticketdetails}}"
@@ -50,7 +50,7 @@
         ref: "slack.conversations.invite"
         parameters:
           channel: "{{slack_channel_create.result.channel.id}}"
-          users: "U01RNU0QA66,U03249C2YB0"
+          users: "U033TUWRPUP"
         on-success: "slack_message"
         on-failure: "slack_fail"
 
