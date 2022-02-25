@@ -1,0 +1,14 @@
+---
+name: "cloud_check_disk"
+action_ref: "acwebhook.cloud_check_disk"
+description: "Execute a command on a remote host via SSH."
+formats:
+    - "checkdisk {{envname}}"
+ack:
+    format: "Hold tight while I run command: on hosts *{{execution.parameters.envname}}*"
+result:
+    format: |
+
+        Details are as follows:
+        ---> stdout: {{execution.result.stdout}}
+        ---> stderr: {{execution.result.stderr}}

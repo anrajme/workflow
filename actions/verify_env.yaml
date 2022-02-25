@@ -1,0 +1,11 @@
+---
+name: verify_env
+runner_type: local-shell-script
+description: Action which check whether a deployment is running.
+enabled: true
+entry_point: verify_env.sh
+parameters:
+  accountname:
+    type: "string"
+    required: true
+    position: 1

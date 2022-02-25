@@ -1,0 +1,19 @@
+---
+# Action definition metadata
+name: "website_down_alert_action_chain"
+description: "Website down alert chain workflow"
+
+# `runner_type` has value `action-chain` to identify that action is an ActionChain.
+runner_type: "action-chain"
+
+# `entry_point` path to the ActionChain definition file, relative to the pack's action directory.
+entry_point: "chains/website_down_alert_action_chain.yaml"
+
+enabled: true
+parameters:
+  ticketdetails:
+    type: "string"
+    required: true
+  accountname:
+    type: "string"
+    required: true

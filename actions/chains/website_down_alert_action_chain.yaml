@@ -1,0 +1,78 @@
+---
+    chain:
+      - name: "verify_env"
+        ref: "acwebhook.verify_env"
+        parameters:
+          accountname: "{{accountname}}"
+        on-success: "zd_create"
+        on-failure: "cloud_fail"
+
+      - name: "zd_create"
+        ref: "zendesklite.create.ticket"
+        parameters:
+          subject: "Message from Newrelic to Stack Storm"
+          description: "Cloud Project Id: {{verify_env.stdout}}, Issue: {{ticketdetails}}"
+          priority: "urgent"
+        on-success: "check_deployment"
+        on-failure: "zd_fail"
+
+      - name: "check_deployment"
+        ref: "acwebhook.check_deployment"
+        parameters:
+          envname: "{{verify_env.stdout}}"
+        on-success: "zd_update"
+        on-failure: "cloud_fail"
+
+      - name: "zd_update"
+        ref: "zendesklite.update.ticket"
+        parameters:
+          ticket: '{{zd_create.stdout | jsonpath_query("$.ticket.id") | replace("[", "") | replace("]", "")}}'
+          comment: "{{check_deployment.stdout}}"
+          status: "new"
+        on-success: "slack_decide"
+        on-failure: "zd_fail"
+
+      - name: "slack_decide"
+        ref: "acwebhook.need_slack_channel"
+        parameters:
+          flagstatus: '{{check_deployment.stdout}}'
+        on-success: "slack_channel_create"
+        on-failure: "slack_fail"
+
+      - name: "slack_channel_create"
+        ref: "slack.conversations.create"
+        parameters:
+          name: 'incident_{{zd_create.stdout | jsonpath_query("$.ticket.id") | replace("[", "") | replace("]", "")}}'
+        on-success: "slack_channel_invite"
+        on-failure: "slack_fail"
+
+      - name: "slack_channel_invite"
+        ref: "slack.conversations.invite"
+        parameters:
+          channel: "{{slack_channel_create.result.channel.id}}"
+          users: "U01RNU0QA66,U03249C2YB0"
+        on-success: "slack_message"
+        on-failure: "slack_fail"
+
+      - name: "slack_message"
+        ref: "slack.chat.postMessage"
+        parameters:
+          channel: "{{slack_channel_create.result.channel.id}}"
+          text: 'New Ticket created from Newrelic alert https://magento1544124303.zendesk.com/agent/tickets/{{zd_create.stdout | jsonpath_query("$.ticket.id") | replace("[", "") | replace("]", "")}}'
+        on-failure: "slack_fail"
+
+      - name: "cloud_fail"
+        ref: "core.local"
+        parameters:
+          cmd: "echo \"Error in Cloud connect\""
+
+      - name: "zd_fail"
+        ref: "core.local"
+        parameters:
+          cmd: "echo \"Error in ZD\""
+
+      - name: "slack_fail"
+        ref: "core.local"
+        parameters:
+          cmd: "echo \"Error in Slack chat\""
+    default: "verify_env"

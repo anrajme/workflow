@@ -1,0 +1,11 @@
+---
+name: need_slack_channel
+runner_type: local-shell-script
+description: Decide to create a slack channel
+enabled: true
+entry_point: need_slack_channel.sh
+parameters:
+  flagstatus:
+    type: "string"
+    required: true
+    position: 1

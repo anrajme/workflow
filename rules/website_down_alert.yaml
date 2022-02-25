@@ -1,0 +1,19 @@
+---
+  name: "website_down_alert"
+  description: "Rule for website down alert."
+  enabled: true
+
+  trigger:
+    type: "core.st2.webhook"
+    parameters:
+        url: "down-alert"
+  criteria:
+      trigger.body.current_state:
+          pattern: "open"
+          type: "equals"
+
+  action:
+    ref: "acwebhook.website_down_alert_action_chain"
+    parameters:
+        ticketdetails: "{{ trigger.body.details }}"
+        accountname: "{{ trigger.body.account_name }}"
