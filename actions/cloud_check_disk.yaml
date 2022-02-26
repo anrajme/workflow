@@ -9,6 +9,7 @@ parameters:
     type: "string"
     required: true
     position: 1
+    default: "{{action_context.source_channel}}"
 #notify:
 # on-complete:
 #   message: "{{action_context}}"

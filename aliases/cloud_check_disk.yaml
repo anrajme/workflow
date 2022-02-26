@@ -3,9 +3,9 @@ name: "cloud_check_disk"
 action_ref: "workflow.cloud_check_disk"
 description: "Execute a command on a remote host via SSH."
 formats:
-    - "checkdisk {{envname}}"
+    - "checkdisk"
 ack:
-    format: "Hold tight while I run command: on hosts *{{execution.parameters.envname}}*"
+    format: "Hold tight while I run command: on hosts *{{action_context.source_channel}}*"
 result:
     format: |
 

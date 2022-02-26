@@ -42,7 +42,7 @@
       - name: "slack_channel_create"
         ref: "slack.conversations.create"
         parameters:
-          name: 'incident_{{zd_create.stdout | jsonpath_query("$.ticket.id") | replace("[", "") | replace("]", "")}}'
+          name: 'incident_{{zd_create.stdout | jsonpath_query("$.ticket.id") | replace("[", "") | replace("]", "")}}_{{verify_env.stdout}}'
         on-success: "slack_channel_invite"
         on-failure: "slack_fail"
 
