@@ -50,7 +50,7 @@
         ref: "slack.conversations.invite"
         parameters:
           channel: "{{slack_channel_create.result.channel.id}}"
-          users: "U033TUWRPUP"
+          users: "{{config_context.slack_invite}}"
         on-success: "slack_message"
         on-failure: "slack_fail"
 
@@ -58,7 +58,7 @@
         ref: "slack.chat.postMessage"
         parameters:
           channel: "{{slack_channel_create.result.channel.id}}"
-          text: 'New Ticket created from Newrelic alert https://magento1544124303.zendesk.com/agent/tickets/{{zd_create.stdout | jsonpath_query("$.ticket.id") | replace("[", "") | replace("]", "")}}'
+          text: 'New Ticket created from Newrelic alert {{config_context.zendesk_url}}{{zd_create.stdout | jsonpath_query("$.ticket.id") | replace("[", "") | replace("]", "")}}'
         on-failure: "slack_fail"
 
       - name: "cloud_fail"
