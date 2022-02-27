@@ -1,0 +1,13 @@
+---
+name: "update_ticket"
+action_ref: "workflow.update_ticket"
+description: "Update the zendesk ticket"
+formats:
+    - "update ticket {{comment}}"
+ack:
+    format: "Hold tight while I run command: on hosts"
+result:
+    format: |
+
+        Details are as follows:
+        ---> {{execution.result.output.message}}

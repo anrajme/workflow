@@ -1,0 +1,10 @@
+---
+name: update_ticket
+description: Update the zendesk ticket.
+runner_type: orquesta
+entry_point: workflows/update_ticket.yaml
+enabled: true
+parameters:
+  comment:
+    required: true
+    type: string

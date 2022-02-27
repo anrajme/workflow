@@ -1,0 +1,42 @@
+version: 1.0
+
+description: Update the zendesk ticket.
+
+input:
+  - comment
+
+vars:
+  - message: null
+
+tasks:
+  start:
+    action: core.echo message="Automation started."
+    next:
+      - when: <% succeeded() %>
+        do: get_channel_name
+
+  get_channel_name:
+    action: slack.conversations.info
+    input:
+      channel: <% ctx(st2).source_channel %>
+    next:
+      - when: <% succeeded() %>
+        publish: zd_ticket=<% result().result.channel.name.split('_')[1] %>
+        do: zd_update
+      - when: <% failed() %>
+        publish: message=<% result().stderr %>
+
+  zd_update:
+    action: zendesklite.update.ticket
+    input:
+      ticket: <% ctx().zd_ticket %>
+      comment: <% ctx().comment %>
+      status: "open"
+    next:
+      - when: <% succeeded() %>
+        publish: message="done"
+      - when: <% failed() %>
+        publish: message="failed"
+
+output:
+  - message: <% ctx(message) %>
