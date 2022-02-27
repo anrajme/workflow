@@ -1,14 +1,12 @@
 ---
 name: "cloud_check_disk"
-action_ref: "workflow.cloud_check_disk"
-description: "Execute a command on a remote host via SSH."
+action_ref: "workflow.cloud_check_disk_workflow"
+description: "Check disk utilization on cloud environment."
 formats:
-    - "checkdisk {{envname}}"
+    - "checkdisk"
 ack:
-    format: "Hold tight while I run command: on hosts *{{execution.parameters.envname}}*"
+    format: "Hold tight while I run command: on hosts"
 result:
     format: |
-
         Details are as follows:
-        ---> stdout: {{execution.result.stdout}}
-        ---> stderr: {{execution.result.stderr}}
+        ---> {{execution.result.output.message}}

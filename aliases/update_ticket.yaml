@@ -1,9 +1,11 @@
 ---
 name: "update_ticket"
-action_ref: "workflow.update_ticket"
+action_ref: "workflow.update_ticket_workflow"
 description: "Update the zendesk ticket"
 formats:
-    - "update ticket {{comment}}"
+    - display: "update ticket {{comment}}"
+      representation:
+          - "ticket update {{comment}}"
 ack:
     format: "Hold tight while I run command: on hosts"
 result:

@@ -21,22 +21,20 @@ tasks:
       channel: <% ctx(st2).source_channel %>
     next:
       - when: <% succeeded() %>
-        publish: zd_ticket=<% result().result.channel.name.split('_')[1] %>
-        do: zd_update
+        publish: env_name=<% result().result.channel.name.split('_')[2] %>
+        do: env_check_disk
       - when: <% failed() %>
         publish: message="channel name get failed"
 
-  zd_update:
-    action: zendesklite.update.ticket
+  env_check_disk:
+    action: workflow.cloud_check_disk
     input:
-      ticket: <% ctx().zd_ticket %>
-      comment: <% ctx().comment %>
-      status: "open"
+      envname: <% ctx().env_name %>
     next:
       - when: <% succeeded() %>
-        publish: message="ticket updated"
+        publish: message=<% result().stdout %>
       - when: <% failed() %>
-        publish: message="ticket update failed"
+        publish: message=<% result().stderr %>
 
 output:
   - message: <% ctx(message) %>

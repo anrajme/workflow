@@ -1,5 +1,5 @@
 ---
-name: update_ticket
+name: update_ticket_workflow
 description: Update the zendesk ticket.
 runner_type: orquesta
 entry_point: workflows/update_ticket.yaml

@@ -1,0 +1,6 @@
+---
+name: cloud_check_disk_workflow
+description: Check cloud enviorment disk usage.
+runner_type: orquesta
+entry_point: workflows/cloud_check_disk.yaml
+enabled: true
