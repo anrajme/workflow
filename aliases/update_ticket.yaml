@@ -6,6 +6,7 @@ description: "Update the zendesk ticket"
 formats:
   - display: "update ticket {{comment}} {{public=false}}"
     representation:
+        - "update ticket {{comment}} {{public=false}}"
         - "ticket update {{comment}} {{public=false}}"
         - "add comment {{comment}} {{public=false}}"
 ack:

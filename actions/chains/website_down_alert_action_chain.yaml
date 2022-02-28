@@ -25,8 +25,9 @@
       - name: "zd_update"
         ref: "zendesk.update_ticket"
         parameters:
-          ticket_id: '{{zd_create.stdout | jsonpath_query("$.ticket.id") | replace("[", "") | replace("]", "")}}'
+          ticket_id: '{{zd_create.result.ticket_id}}'
           comment_text: "{{check_deployment.stdout}}"
+          public: false
         on-success: "slack_decide"
         on-failure: "zd_fail"
 
@@ -40,7 +41,7 @@
       - name: "slack_channel_create"
         ref: "slack.conversations.create"
         parameters:
-          name: 'incident_{{zd_create.stdout | jsonpath_query("$.ticket.id") | replace("[", "") | replace("]", "")}}_{{verify_env.stdout}}'
+          name: 'incident_{{zd_create.result.ticket_id}}_{{verify_env.stdout}}'
         on-success: "slack_channel_invite"
         on-failure: "slack_fail"
 
@@ -56,7 +57,7 @@
         ref: "slack.chat.postMessage"
         parameters:
           channel: "{{slack_channel_create.result.channel.id}}"
-          text: 'New Ticket created from Newrelic alert {{config_context.zendesk_url}}{{zd_create.stdout | jsonpath_query("$.ticket.id") | replace("[", "") | replace("]", "")}}'
+          text: 'New Ticket created from Newrelic alert {{zd_create.result.ticket_url}}'
         on-failure: "slack_fail"
 
       - name: "cloud_fail"
