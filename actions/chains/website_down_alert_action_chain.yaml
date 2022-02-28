@@ -8,7 +8,7 @@
         on-failure: "cloud_fail"
 
       - name: "zd_create"
-        ref: "zendesklite.create.ticket"
+        ref: "zendesk.create_ticket"
         parameters:
           subject: "Message from Newrelic to Stack Storm"
           description: "Cloud Project Id: {{verify_env.stdout}}, Issue: {{ticketdetails}}"
@@ -24,11 +24,10 @@
         on-failure: "cloud_fail"
 
       - name: "zd_update"
-        ref: "zendesklite.update.ticket"
+        ref: "zendesk.update_ticket"
         parameters:
-          ticket: '{{zd_create.stdout | jsonpath_query("$.ticket.id") | replace("[", "") | replace("]", "")}}'
-          comment: "{{check_deployment.stdout}}"
-          status: "new"
+          ticket_id: '{{zd_create.stdout | jsonpath_query("$.ticket.id") | replace("[", "") | replace("]", "")}}'
+          comment_text: "{{check_deployment.stdout}}"
         on-success: "slack_decide"
         on-failure: "zd_fail"
 
