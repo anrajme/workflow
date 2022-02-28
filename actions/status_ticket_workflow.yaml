@@ -11,3 +11,6 @@ parameters:
   status:
     required: true
     type: string
+  public:
+    required: false
+    type: boolean

@@ -5,6 +5,7 @@ description: Update the zendesk ticket.
 input:
   - comment
   - status
+  - public
 
 vars:
   - message: null
@@ -23,9 +24,21 @@ tasks:
     next:
       - when: <% succeeded() %>
         publish: zd_ticket=<% result().result.channel.name.split('_')[1] %>
-        do: zd_update
+        do: zd_comment
       - when: <% failed() %>
         publish: message="channel name get failed"
+
+  zd_comment:
+    action: zendesk.update_ticket
+    input:
+      ticket_id: <% ctx().zd_ticket %>
+      comment_text: <% ctx().comment %>
+      public: <% ctx().public %>
+    next:
+      - when: <% succeeded() %>
+        do: zd_update
+      - when: <% failed() %>
+        do: fail
 
   zd_update:
     action: zendesk.update_ticket_status

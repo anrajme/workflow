@@ -11,6 +11,7 @@ formats:
 immutable_parameters:
   comment: "Marking this ticket as solved"
   status: "solved"
+  public: true
 
 ack:
     format: "Please wait I'm closing the ticket"
