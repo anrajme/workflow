@@ -31,7 +31,7 @@ tasks:
     action: zendesk.update_ticket
     input:
       ticket_id: <% ctx().zd_ticket %>
-      comment_text: <% ctx().comment %>
+      comment_text: "<% ctx(st2).api_user %> added a comment in slack channel <% task(get_channel_name).result.result.channel.name %>:\n<% ctx().comment %>"
       public: <% ctx().public %>
     next:
       - when: <% succeeded() %>
