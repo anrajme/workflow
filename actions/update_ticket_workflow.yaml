@@ -8,3 +8,6 @@ parameters:
   comment:
     required: true
     type: string
+  public:
+    required: false
+    type: boolean

@@ -4,7 +4,7 @@ description: Update the zendesk ticket.
 
 input:
   - comment
-  - public
+  - status
 
 vars:
   - message: null
@@ -28,16 +28,15 @@ tasks:
         publish: message="channel name get failed"
 
   zd_update:
-    action: zendesk.update_ticket
+    action: zendesk.update_ticket_status
     input:
       ticket_id: <% ctx().zd_ticket %>
-      comment_text: <% ctx().comment %>
-      public: <% ctx().public %>
+      status: <% ctx().status %>
     next:
       - when: <% succeeded() %>
-        publish: message="your comment was added"
+        publish: message="ticket status updated"
       - when: <% failed() %>
-        publish: message="your comment cannot be added"
+        publish: message="ticket status update failed"
 
 output:
   - message: <% ctx(message) %>

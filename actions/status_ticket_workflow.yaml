@@ -1,0 +1,13 @@
+---
+name: status_ticket_workflow
+description: Change the zendesk ticket status.
+runner_type: orquesta
+entry_point: workflows/status_ticket.yaml
+enabled: true
+parameters:
+  comment:
+    required: true
+    type: string
+  status:
+    required: true
+    type: string

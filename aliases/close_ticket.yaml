@@ -1,0 +1,20 @@
+---
+name: "close_ticket"
+action_ref: "workflow.status_ticket_workflow"
+description: "Close the zendesk ticket"
+
+formats:
+  - display: "close ticket"
+    representation:
+        - "close ticket"
+        - "ticket close"
+immutable_parameters:
+  comment: "Marking this ticket as solved"
+  status: "solved"
+
+ack:
+    format: "Please wait I'm closing the ticket"
+    append_url: false
+result:
+    format: |
+        {{execution.result.output.message}}

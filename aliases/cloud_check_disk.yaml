@@ -6,6 +6,7 @@ formats:
     - "checkdisk"
 ack:
     format: "Hold tight while I run command: on hosts"
+    append_url: false
 result:
     format: |
         Details are as follows:
