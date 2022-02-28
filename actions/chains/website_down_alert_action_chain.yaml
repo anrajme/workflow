@@ -12,7 +12,6 @@
         parameters:
           subject: "Message from Newrelic to Stack Storm"
           description: "Cloud Project Id: {{verify_env.stdout}}, Issue: {{ticketdetails}}"
-          priority: "urgent"
         on-success: "check_deployment"
         on-failure: "zd_fail"
 
