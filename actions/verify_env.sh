@@ -7,8 +7,10 @@ if [ ! -z "$CLOUDENV" ];then
     echo $CLOUDENV
     exit 0
   else
+    echo "Cloud SSH Failed"
     exit 1
   fi
 else
+   echo "Invalid Environment name"
   exit 2
 fi

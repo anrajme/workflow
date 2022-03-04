@@ -1,0 +1,17 @@
+---
+name: down_alert_workflow
+description: Website down alert.
+runner_type: orquesta
+entry_point: workflows/down_alert.yaml
+enabled: true
+parameters:
+  ticketdetails:
+    type: "string"
+    required: true
+  accountname:
+    type: "string"
+    required: true
+  slack_invite:
+    type: "string"
+    required: false
+    default: "{{config_context.slack_invite}}"

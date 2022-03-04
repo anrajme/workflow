@@ -1,0 +1,85 @@
+version: 1.0
+
+description: Website down alert.
+
+input:
+  - ticketdetails
+  - accountname
+  - slack_invite
+
+vars:
+  - message: null
+
+tasks:
+
+  verify_env:
+    action: workflow.verify_env
+    input:
+      accountname: <% ctx().accountname %>
+    next:
+      - when: <% succeeded() %>
+        do: zd_create
+      - when: <% failed() %>
+        publish:
+          - message: "<% result().result.stdout %>"
+
+  zd_create:
+    action: zendesk.create_ticket
+    input:
+      subject: "Message from Newrelic to Stack Storm"
+      description: "Cloud Project Id: <% task(verify_env).result.stdout %>, Issue: <% ctx().ticketdetails %>"
+    next:
+      - when: <% succeeded() %>
+        do: check_deployment
+      - when: <% failed() %>
+
+  check_deployment:
+    action: workflow.check_deployment
+    input:
+       envname: "<% task(verify_env).result.stdout %>"
+    next:
+      - when: <% succeeded() %>
+        do: zd_update
+      - when: <% failed() %>
+
+  zd_update:
+    action: zendesk.update_ticket
+    input:
+      ticket_id: "<% task(zd_create).result.result.ticket_id %>"
+      comment_text: "<% task(check_deployment).result.stdout %>"
+      public: false
+    next:
+      - when: <% succeeded() %>
+        do: slack_channel_create
+      - when: <% failed() %>
+
+  slack_channel_create:
+    action: slack.conversations.create
+    input:
+      name: "incident_<% task(zd_create).result.result.ticket_id %>_<% task(verify_env).result.stdout %>"
+    next:
+      - when: <% succeeded() %>
+        do: slack_channel_invite
+      - when: <% failed() %>
+
+  slack_channel_invite:
+    action: slack.conversations.invite
+    input:
+      channel: <% task(slack_channel_create).result.result.channel.id %>
+      users: <% ctx().slack_invite %>
+    next:
+      - when: <% succeeded() %>
+        do: slack_message
+      - when: <% failed() %>
+
+  slack_message:
+    action: slack.chat.postMessage
+    input:
+      channel: <% task(slack_channel_create).result.result.channel.id %>
+      text: "New Ticket created from Newrelic alert <% task(zd_create).result.result.ticket_url %>"
+    next:
+      - when: <% succeeded() %>
+      - when: <% failed() %>
+
+output:
+  - message: <% ctx(message) %>
