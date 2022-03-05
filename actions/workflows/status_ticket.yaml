@@ -47,9 +47,11 @@ tasks:
       status: <% ctx().status %>
     next:
       - when: <% succeeded() %>
-        publish: message="ticket status updated"
+        publish:
+          - message: "Support ticket <<% result().result.ticket_url %>| #<% result().result.ticket_id %>> closed."
       - when: <% failed() %>
-        publish: message="ticket status update failed"
+        publish:
+          - message: "ticket status update failed"
 
 output:
   - message: <% ctx(message) %>

@@ -26,8 +26,8 @@ tasks:
   zd_create:
     action: zendesk.create_ticket
     input:
-      subject: "Message from Newrelic to Stack Storm"
-      description: "Cloud Project Id: <% task(verify_env).result.stdout %>, Issue: <% ctx().ticketdetails %>"
+      subject: "Notification of detected outage on your Magento Cloud Environment: <% task(verify_env).result.stdout %>"
+      description: "Hello,\nWe have detected a service interruption affecting your site's availability on Magento Cloud, which is currently investigated.\nAdditional details will be provided in this ticket.\nProject: <% task(verify_env).result.stdout %>\nMessage: <% ctx().ticketdetails %>\nThank You,\nThe Magento Cloud Support Team"
     next:
       - when: <% succeeded() %>
         do: check_deployment
@@ -76,7 +76,7 @@ tasks:
     action: slack.chat.postMessage
     input:
       channel: <% task(slack_channel_create).result.result.channel.id %>
-      text: "New Ticket created from Newrelic alert <% task(zd_create).result.result.ticket_url %>"
+      text: "New support ticket created from NewRelic alert.\n><<% task(zd_create).result.result.ticket_url %>|Zendesk Ticket #<% task(zd_create).result.result.ticket_id %>>\n_This is an interactive channel. Type '@sauron help' to list interactions._"
     next:
       - when: <% succeeded() %>
       - when: <% failed() %>

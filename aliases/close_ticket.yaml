@@ -14,8 +14,8 @@ immutable_parameters:
   public: true
 
 ack:
-    format: "Please wait I'm closing the ticket"
-    append_url: false
+  format: "Please wait while I'm closing the ticket..."
+  append_url: false
 result:
     format: |
         {{execution.result.output.message}}
