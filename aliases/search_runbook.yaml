@@ -1,0 +1,38 @@
+---
+name: "search_runbook"
+action_ref: "confluence.search.page"
+description: "Search run-book in confluence."
+
+formats:
+  - display: "runbook {{label}}"
+    representation:
+      - "search runbook {{label}}"
+      - "runbook search {{label}}"
+      - "find runbook {{label}}"
+      - "runbook find {{label}}"
+      - "runbook {{label}}"
+
+immutable_parameters:
+  space: "CS"
+  type: "page"
+
+ack:
+  format: "Please wait while I'm pulling runbooks..."
+  append_url: false
+
+result:
+  extra:
+    slack:
+      title: "{% if execution.result.stdout.size > 0 %}Following runbooks found for '{{execution.parameters.label}}' label.{% else %}No Runbooks found for '{{execution.parameters.label}}' label.{% endif %}"
+      fallback: "Runbook Search"
+      footer: "Confluence"
+      footer_icon: "https://wac-cdn-2.atlassian.com/image/upload/f_auto,q_auto/dam/jcr:f4c82ed9-e6dd-4001-b201-de5128676efe/Confluence@2x-icon-blue.png"
+      color: "{% if execution.result.stdout.size > 0 %}good{% else %}danger{% endif %}"
+  format: |
+    {% if execution.result.stdout.size > 0 %}
+      {% for runbook in execution.result.stdout.results -%}
+          <{{execution.result.stdout._links.base}}{{runbook._links.webui}}|{{runbook.title}}>
+      {%+ endfor %}
+    {% else %}
+      I'm sorry! I can't find any runbooks with '{{execution.parameters.label}}' label.
+    {% endif %}
