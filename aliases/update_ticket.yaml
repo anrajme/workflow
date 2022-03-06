@@ -1,7 +1,7 @@
 ---
 name: "update_ticket"
 action_ref: "workflow.update_ticket_workflow"
-description: "Update the zendesk ticket"
+description: "Update the zendesk ticket."
 
 formats:
   - display: "update ticket {{comment}} {{public=false}}"
@@ -10,9 +10,24 @@ formats:
         - "ticket update {{comment}} {{public=false}}"
         - "add comment {{comment}} {{public=false}}"
 ack:
-    format: "Please wait I'm updating the ticket"
+    format: "Please wait while I'm updating the ticket..."
     append_url: false
 
 result:
-    format: |
-        {{execution.result.output.message}}
+  extra:
+    slack:
+      title: "{% if execution.result.output.success %}Ticket #{{execution.result.output.ticket_id}} has been commented on!{% else %}Error!{% endif %}"
+      fallback: "New Zendesk Comment"
+      footer: "Zendesk"
+      footer_icon: "https://zen-marketing-documentation.s3.amazonaws.com/docs/en/branding-logo-zendesk.png"
+      color: "{% if execution.result.output.success %}good{% else %}danger{% endif %}"
+      fields:
+        - title: "Zendesk Page"
+          value: "{% if execution.result.output.success %}<{{execution.result.output.ticket_url}}|Ticket #{{execution.result.output.ticket_id}}>{% else %}Not Available{% endif %}"
+          short: true
+  format: |
+    {% if execution.result.output.success %}
+    The following {% if execution.result.output.public %}public{% else %}private{% endif %} comment was added by {{execution.result.output.commented_user }}: ```{{execution.result.output.comment_text}}```
+    {% else %}
+    Error: {{execution.result.output.message}}
+    {% endif %}

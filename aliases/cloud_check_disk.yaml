@@ -5,9 +5,9 @@ description: "Check disk utilization on cloud environment."
 formats:
     - "checkdisk"
 ack:
-    format: "Hold tight while I run command: on hosts"
+    format: "Hold tight while I pull data from the server..."
     append_url: false
 result:
     format: |
         Details are as follows:
-        ---> {{execution.result.output.message}}
+        ```{{execution.result.output.message}}```

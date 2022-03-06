@@ -4,7 +4,7 @@ if [ ! -z "$CLOUDENV" ];then
   FLAGCHECK=$(magento-cloud environment:ssh -p $CLOUDENV -e production "ls var/.maintenance.flag" 2>&1 | grep "ls\|.maintenance.flag")
   if [ $? -eq 0 ]; then
     if [[ $FLAGCHECK == *"No such file or directory"* ]]; then
-      echo "Deployment Not Running"
+      echo "No recent deployment or active maintenance found."
       exit 0
     elif [[ $FLAGCHECK == "var/.maintenance.flag" ]]; then
       echo "Deployment Running"

@@ -31,13 +31,28 @@ tasks:
     action: zendesk.update_ticket
     input:
       ticket_id: <% ctx().zd_ticket %>
-      comment_text: "<% ctx(st2).api_user %> added a comment in slack channel <% task(get_channel_name).result.result.channel.name %>:\n<% ctx().comment %>"
+      comment_text: "Commented by: <% ctx(st2).api_user %> | Slack channel: <% task(get_channel_name).result.result.channel.name %>\n<% ctx().comment %>"
       public: <% ctx().public %>
     next:
       - when: <% succeeded() %>
-        publish: message="your comment was added"
+        publish:
+          - success: true
+          - public: <% result().result.public %>
+          - comment_text: <% ctx().comment %>
+          - ticket_id: <% result().result.ticket_id %>
+          - ticket_url: <% result().result.ticket_url %>
+          - commented_user: <% ctx(st2).api_user %>
+          - message: "your comment was added"
       - when: <% failed() %>
-        publish: message="your comment cannot be added"
+        publish:
+          - success: false
+          - message: "your comment cannot be added"
 
 output:
   - message: <% ctx(message) %>
+  - success: <% ctx(success) %>
+  - public: <% ctx(public) %>
+  - comment_text: <% ctx(comment_text) %>
+  - ticket_id: <% ctx(ticket_id) %>
+  - ticket_url: <% ctx(ticket_url) %>
+  - commented_user: <% ctx(commented_user) %>
