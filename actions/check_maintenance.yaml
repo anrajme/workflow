@@ -1,0 +1,18 @@
+---
+name: check_maintenance
+runner_type: local-shell-script
+description: Action which check whether the maintence flag is on.
+enabled: true
+entry_point: check_maintenance.sh
+parameters:
+  envname:
+    type: "string"
+    required: true
+    position: 1
+#notify:
+# on-complete:
+#   message: "{{action_context}}"
+#   routes:
+#     - "slack"
+#   data:
+#     channel: "{{action_context.message.source_channel}}"

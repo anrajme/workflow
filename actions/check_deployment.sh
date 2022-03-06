@@ -1,16 +1,19 @@
 #!/usr/bin/env bash
 CLOUDENV=${1}
 if [ ! -z "$CLOUDENV" ];then
-  FLAGCHECK=$(magento-cloud environment:ssh -p $CLOUDENV -e production "ls var/.maintenance.flag" 2>&1 | grep "ls\|.maintenance.flag")
+  LASTDEPLOY=$(magento-cloud activity:list -p 6fck2obu3244c -e production --columns=Created,State,Result  --limit 1 --format=csv --no-header)
   if [ $? -eq 0 ]; then
-    if [[ $FLAGCHECK == *"No such file or directory"* ]]; then
-      echo "No recent deployment or active maintenance found."
+    IFS=, read -r DEPLOYDATE DEPLOYSTATUS DEPLOYRESULT <<< $LASTDEPLOY
+    if [[ $DEPLOYSTATUS == "in progress" ]]; then
+      echo "Deployment is still running"
+      echo "Deployment Start Time: $DEPLOYDATE"
       exit 0
-    elif [[ $FLAGCHECK == "var/.maintenance.flag" ]]; then
-      echo "Deployment Running"
+    elif [[ $DEPLOYSTATUS == "complete" ]]; then
+      echo "Deployment is not running."
+      echo "Last Deployment: $DEPLOYDATE --> Deployment Status: $DEPLOYSTATUS --> Deployment Result:$DEPLOYRESULT"
       exit 0
     else
-      echo "Maintenance flag check failed"
+      echo "Deployment status check failed"
       exit 1
     fi
   else

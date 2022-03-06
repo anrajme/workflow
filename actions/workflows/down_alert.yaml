@@ -32,7 +32,7 @@ tasks:
       description: "Hello,\nWe have detected a service interruption affecting your site's availability on Magento Cloud, which is currently investigated.\nAdditional details will be provided in this ticket.\nProject: <% task(verify_env).result.stdout %>\nMessage: <% ctx().ticketdetails %>\nThank You,\nThe Magento Cloud Support Team"
     next:
       - when: <% succeeded() %>
-        do: check_deployment
+        do: check_maintenance
       - when: <% succeeded() and result().result.containsKey("error") %>
         publish:
           - error_message: "Zendesk ticket create failed"
@@ -40,26 +40,40 @@ tasks:
       - when: <% failed() %>
         do: fail
 
+  check_maintenance:
+    action: workflow.check_maintenance
+    input:
+      envname: "<% task(verify_env).result.stdout %>"
+    next:
+      - when: <% succeeded() %>
+        do: check_deployment
+      - when: <% failed() %>
+        publish:
+          - error_message: "<% result().stdout %>"
+        do: fail
+
   check_deployment:
     action: workflow.check_deployment
     input:
-       envname: "<% task(verify_env).result.stdout %>"
+      envname: "<% task(verify_env).result.stdout %>"
     next:
       - when: <% succeeded() %>
         do: zd_update
       - when: <% failed() %>
         publish:
           - error_message: "<% result().stdout %>"
-        do: fail
+        do: zd_update
 
   zd_update:
     action: zendesk.update_ticket
     input:
       ticket_id: "<% task(zd_create).result.result.ticket_id %>"
-      comment_text: "<% task(check_deployment).result.stdout %>"
+      comment_text: "<% task(check_maintenance).result.stdout %>\n\n<% task(check_deployment).result.stdout %>"
       public: false
     next:
-      - when: <% succeeded() %>
+      - when: <% regex("Deployment is still running").matches(task(check_deployment).result.stdout) = true %>
+        do: silence
+      - when: <% regex("Deployment is still running").matches(task(check_deployment).result.stdout) != true %>
         do: slack_channel_create
       - when: <% succeeded() and result().result.containsKey("error") %>
         publish:
@@ -104,6 +118,9 @@ tasks:
         publish:
           - error_message: "<% result().stderr %>"
         do: fail
+
+  silence:
+    action: core.echo message="No action is required"
 
 output:
   - sucess_message: <% ctx(sucess_message) %>
