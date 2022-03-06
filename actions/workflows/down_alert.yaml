@@ -8,7 +8,8 @@ input:
   - slack_invite
 
 vars:
-  - message: null
+  - sucess_message: null
+  - error_message: null
 
 tasks:
 
@@ -21,7 +22,8 @@ tasks:
         do: zd_create
       - when: <% failed() %>
         publish:
-          - message: "<% result().result.stdout %>"
+          - error_message: "<% result().stdout %>"
+        do: fail
 
   zd_create:
     action: zendesk.create_ticket
@@ -31,7 +33,12 @@ tasks:
     next:
       - when: <% succeeded() %>
         do: check_deployment
+      - when: <% succeeded() and result().result.containsKey("error") %>
+        publish:
+          - error_message: "Zendesk ticket create failed"
+        do: fail
       - when: <% failed() %>
+        do: fail
 
   check_deployment:
     action: workflow.check_deployment
@@ -41,6 +48,9 @@ tasks:
       - when: <% succeeded() %>
         do: zd_update
       - when: <% failed() %>
+        publish:
+          - error_message: "<% result().stdout %>"
+        do: fail
 
   zd_update:
     action: zendesk.update_ticket
@@ -51,7 +61,12 @@ tasks:
     next:
       - when: <% succeeded() %>
         do: slack_channel_create
+      - when: <% succeeded() and result().result.containsKey("error") %>
+        publish:
+          - error_message: "Zendesk ticket update failed"
+        do: fail
       - when: <% failed() %>
+        do: fail
 
   slack_channel_create:
     action: slack.conversations.create
@@ -61,6 +76,9 @@ tasks:
       - when: <% succeeded() %>
         do: slack_channel_invite
       - when: <% failed() %>
+        publish:
+          - error_message: "<% result().stderr %>"
+        do: fail
 
   slack_channel_invite:
     action: slack.conversations.invite
@@ -71,6 +89,9 @@ tasks:
       - when: <% succeeded() %>
         do: slack_message
       - when: <% failed() %>
+        publish:
+          - error_message: "<% result().stderr %>"
+        do: fail
 
   slack_message:
     action: slack.chat.postMessage
@@ -80,6 +101,10 @@ tasks:
     next:
       - when: <% succeeded() %>
       - when: <% failed() %>
+        publish:
+          - error_message: "<% result().stderr %>"
+        do: fail
 
 output:
-  - message: <% ctx(message) %>
+  - sucess_message: <% ctx(sucess_message) %>
+  - error_message: <% ctx(error_message) %>
