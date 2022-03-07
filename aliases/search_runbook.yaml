@@ -23,15 +23,15 @@ ack:
 result:
   extra:
     slack:
-      title: "{% if execution.result.stdout.size > 0 %}Following runbooks found for '{{execution.parameters.label}}' label.{% else %}No Runbooks found for '{{execution.parameters.label}}' label.{% endif %}"
+      title: "{% if execution.result.result.error is not defined and execution.result.result.size > 0 %}Following runbooks found for '{{execution.parameters.label}}' label.{% else %}No Runbooks found for '{{execution.parameters.label}}' label.{% endif %}"
       fallback: "Runbook Search"
       footer: "Confluence"
       footer_icon: "https://wac-cdn-2.atlassian.com/image/upload/f_auto,q_auto/dam/jcr:f4c82ed9-e6dd-4001-b201-de5128676efe/Confluence@2x-icon-blue.png"
-      color: "{% if execution.result.stdout.size > 0 %}good{% else %}danger{% endif %}"
+      color: "{% if execution.result.result.error is not defined and execution.result.result.size > 0 %}good{% else %}danger{% endif %}"
   format: |
-    {% if execution.result.stdout.size > 0 %}
-      {% for runbook in execution.result.stdout.results -%}
-          <{{execution.result.stdout._links.base}}{{runbook._links.webui}}|{{runbook.title}}>
+    {% if execution.result.result.error is not defined and execution.result.result.size > 0 %}
+      {% for runbook in execution.result.result.results -%}
+          <{{execution.result.result._links.base}}{{runbook._links.webui}}|{{runbook.title}}>
       {%+ endfor %}
     {% else %}
       I'm sorry! I can't find any runbooks with '{{execution.parameters.label}}' label.
