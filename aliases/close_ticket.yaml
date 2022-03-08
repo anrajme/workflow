@@ -14,7 +14,7 @@ immutable_parameters:
   public: true
 
 ack:
-  format: "Please wait while I'm closing the ticket..."
+  format: "_Please wait while I'm closing the zendesk ticket and archive this slack channel..._"
   append_url: false
 result:
     format: |

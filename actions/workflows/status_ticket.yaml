@@ -23,7 +23,9 @@ tasks:
       channel: <% ctx(st2).source_channel %>
     next:
       - when: <% succeeded() %>
-        publish: zd_ticket=<% result().result.channel.name.split('_')[1] %>
+        publish:
+          - zd_ticket: <% result().result.channel.name.split('_')[1] %>
+          - channel_id: <% result().result.channel.id %>
         do: zd_comment
       - when: <% failed() %>
         publish: message="channel name get failed"
@@ -47,11 +49,24 @@ tasks:
       status: <% ctx().status %>
     next:
       - when: <% succeeded() %>
-        publish:
-          - message: "Support ticket <<% result().result.ticket_url %>| #<% result().result.ticket_id %>> closed."
+#        publish:
+#          - message: "Support ticket <<% result().result.ticket_url %>| <% result().result.ticket_id %>> closed."
+        do: channel_archive
       - when: <% failed() %>
         publish:
           - message: "ticket status update failed"
+
+  channel_archive:
+    action: slack.conversations.archive
+    input:
+      channel: <% ctx().channel_id %>
+    next:
+      - when: <% succeeded() %>
+        publish:
+          - message: "Support channel archived!"
+      - when: <% failed() %>
+        publish:
+          - message: "channel archive failed"
 
 output:
   - message: <% ctx(message) %>
