@@ -5,7 +5,7 @@ description: "Check disk utilization on cloud environment."
 formats:
     - "checkdisk"
 ack:
-    format: "_Hold tight while I pull data from the server..._"
+    format: "_Hold tight while I'm pulling data from the server..._"
     append_url: false
 result:
     format: |
