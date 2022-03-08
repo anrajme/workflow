@@ -10,7 +10,8 @@ formats:
         - "ticket update {{comment}} {{public=false}}"
         - "add comment {{comment}} {{public=false}}"
 ack:
-    format: "Please wait while I'm updating the ticket..."
+    format: "
+    -Please wait while I'm updating the ticket..._"
     append_url: false
 
 result:

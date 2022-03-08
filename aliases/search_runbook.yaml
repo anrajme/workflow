@@ -17,7 +17,7 @@ immutable_parameters:
   type: "page"
 
 ack:
-  format: "Please wait while I'm pulling runbooks..."
+  format: "_Please wait while I'm pulling runbooks..._"
   append_url: false
 
 result:
