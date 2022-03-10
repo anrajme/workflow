@@ -10,11 +10,7 @@ class VerifySSHConnection(Action):
             raise Exception("Invalid project details")
         cmd_args=["/home/stanley/.magento-cloud/bin/magento-cloud","-q","ssh", "-p",CLOUDENV, "-e", "production","2>/dev/null" ]
         ssh_check=subprocess.run(cmd_args,shell=False)
-        return(ssh_check.returncode)
-
-ssh_status=VerifySSHConnection()
-ssh_return=ssh_status.run(CLOUDENV)
-if (ssh_return == 0):
-    print(CLOUDENV)
-else:
-    raise Exception("Magento Cloud SSH failed!")
+        if (ssh_check.returncode == 0):
+            print(CLOUDENV)
+        else:
+            raise Exception("Magento Cloud SSH failed!")
