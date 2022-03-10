@@ -18,8 +18,9 @@ if __name__=="__main__":
     if (not CLOUDENV):
         raise Exception("Invalid project details")
     else:
-        ssh_status=check_ssh_connection(CLOUDENV)
-        if (ssh_status == 0):
+        ssh_status=VerifySSHConnection()
+        ssh_return=ssh_status.run(CLOUDENV)
+        if (ssh_return == 0):
             print(CLOUDENV)
         else:
             raise Exception("Magento Cloud SSH failed!")
