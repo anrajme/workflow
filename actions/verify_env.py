@@ -1,11 +1,13 @@
 import re
 import sys
 import subprocess
+from st2common.runners.base_action import Action
 
-def check_ssh_connection(CLOUDENV):
-    cmd_args=["/home/stanley/.magento-cloud/bin/magento-cloud","-q","ssh", "-p",CLOUDENV, "-e", "production","2>/dev/null" ]
-    ssh_check=subprocess.run(cmd_args,shell=False)
-    return(ssh_check.returncode)
+class VerifySSHConnection(Action):
+    def check_ssh_connection(CLOUDENV):
+        cmd_args=["/home/stanley/.magento-cloud/bin/magento-cloud","-q","ssh", "-p",CLOUDENV, "-e", "production","2>/dev/null" ]
+        ssh_check=subprocess.run(cmd_args,shell=False)
+        return(ssh_check.returncode)
 
 if __name__=="__main__":
     if len(sys.argv) < 2:
