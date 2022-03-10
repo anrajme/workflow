@@ -1,9 +1,9 @@
 ---
 name: verify_env
-runner_type: local-shell-script
+runner_type: python-script
 description: Action which check whether a deployment is running.
 enabled: true
-entry_point: verify_env.sh
+entry_point: verify_env.py
 parameters:
   accountname:
     type: "string"
