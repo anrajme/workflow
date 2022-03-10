@@ -5,7 +5,7 @@ from st2common.runners.base_action import Action
 
 class VerifySSHConnection(Action):
     def run(self,accountname):
-        CLOUDENV=re.findall("\([a-z0-9]*\)",sys.argv[1])[0][1:-1]
+        CLOUDENV=re.findall("\([a-z0-9]*\)",accountname)[0][1:-1]
         if (not CLOUDENV):
             raise Exception("Invalid project details")
         cmd_args=["/home/stanley/.magento-cloud/bin/magento-cloud","-q","ssh", "-p",CLOUDENV, "-e", "production","2>/dev/null" ]
