@@ -9,3 +9,8 @@ parameters:
     type: "string"
     required: true
     position: 1
+  cloudtoken:
+    type: "string"
+    default: "{{ st2kv.system.cloudtoken | decrypt_kv }}"
+    position: 2
+    secret: true
