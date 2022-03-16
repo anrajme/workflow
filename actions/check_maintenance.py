@@ -12,7 +12,7 @@ class VerifySSHConnection(Action):
 
             # TODO : needs to use subprocess instead of os.system
 
-            exec_status=os.system('/home/stanley/.magento-cloud/bin/magento-cloud auth:api-token-login -y -q; mkdir -p /root/.ssh; /usr/bin/ssh-keyscan ssh.eu.magentosite.cloud >> /root/.ssh/known_hosts; /usr/bin/ssh-keyscan git.eu.magentosite.cloud >> /root/.ssh/known_hosts; /usr/bin/php /home/stanley/.magento-cloud/bin/magento-cloud ssh -p %s -e production "ls var/.maintenance.flag" 2>/dev/null' % (cloudenv))
+            exec_status=os.system('/home/stanley/.magento-cloud/bin/magento-cloud auth:api-token-login -y -q; mkdir -p /root/.ssh; /usr/bin/ssh-keyscan ssh.eu.magentosite.cloud > /root/.ssh/known_hosts; /usr/bin/ssh-keyscan git.eu.magentosite.cloud >> /root/.ssh/known_hosts; /usr/bin/php /home/stanley/.magento-cloud/bin/magento-cloud ssh -p %s -e production "ls var/.maintenance.flag" 2>/dev/null' % (cloudenv))
             if (exec_status == 0):
                 print("Maintenance flag is enabled")
             else:

@@ -15,8 +15,8 @@ class VerifySSHConnection(Action):
 
             # TODO : needs to use subprocess instead of os.system
 
-            exec_status=os.system('/home/stanley/.magento-cloud/bin/magento-cloud auth:api-token-login -y -q; mkdir -p /root/.ssh; /usr/bin/ssh-keyscan ssh.eu.magentosite.cloud >> /root/.ssh/known_hosts; /usr/bin/ssh-keyscan git.eu.magentosite.cloud >> /root/.ssh/known_hosts; /usr/bin/php /home/stanley/.magento-cloud/bin/magento-cloud ssh -p %s -e production 2>&1 " "' % (cloudenv))
+            exec_status=os.system('/home/stanley/.magento-cloud/bin/magento-cloud auth:api-token-login -y -q; /usr/bin/ssh-keyscan ssh.eu.magentosite.cloud > /root/.ssh/known_hosts; /usr/bin/ssh-keyscan git.eu.magentosite.cloud >> /root/.ssh/known_hosts; /usr/bin/php /home/stanley/.magento-cloud/bin/magento-cloud ssh -p %s -e production " " 2>/dev/null' % (cloudenv))
             if (exec_status == 0):
-                print("Successfully connected to Magento Cloud Instance via SSH")
+                print(cloudenv)
             else:
                 raise Exception("SSH conection attempt failed!")
