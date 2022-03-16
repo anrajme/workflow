@@ -4,7 +4,7 @@ from st2common.runners.base_action import Action
 
 class VerifySSHConnection(Action):
     def run(self,envname,cloudtoken):
-        cloudenv=envname
+        cloudenv=envname.rstrip()
         if (not cloudenv):
             raise Exception("Invalid project details")
         else:
