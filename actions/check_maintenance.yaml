@@ -1,14 +1,19 @@
 ---
 name: check_maintenance
-runner_type: local-shell-script
+runner_type: python-script
 description: Action which check whether the maintence flag is on.
 enabled: true
-entry_point: check_maintenance.sh
+entry_point: check_maintenance.py
 parameters:
   envname:
     type: "string"
     required: true
     position: 1
+  cloudtoken:
+    type: "string"
+    default: "{{ st2kv.system.cloudtoken | decrypt_kv }}"
+    position: 2
+    secret: true
 #notify:
 # on-complete:
 #   message: "{{action_context}}"
